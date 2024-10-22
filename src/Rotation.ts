@@ -1,7 +1,13 @@
-import * as THREE from "three";
+import { BoxGeometry, Mesh, MeshNormalMaterial } from "three";
 
 export default class Rotation {
-  constructor(planetMesh, showRotation = false) {
+    planetPositionX: any;
+    y: number;
+    z: number;
+    showRotation: boolean;
+    mesh: Mesh | undefined;
+
+  constructor(planetMesh: Mesh, showRotation = false) {
     this.planetPositionX = planetMesh.position.x;
     this.y = 0.25;
     this.z = 0.25;
@@ -10,9 +16,9 @@ export default class Rotation {
 
   getMesh() {
     if (this.mesh === undefined || this.mesh === null) {
-      const geometry = new THREE.BoxGeometry(this.planetPositionX, 0.25, 0.25);
-      const material = new THREE.MeshNormalMaterial();
-      this.mesh = new THREE.Mesh(geometry, material);
+      const geometry = new BoxGeometry(this.planetPositionX, 0.25, 0.25);
+      const material = new MeshNormalMaterial();
+      this.mesh = new Mesh(geometry, material);
       this.mesh.position.x = this.planetPositionX / 2;
       this.mesh.visible = this.showRotation;
     }

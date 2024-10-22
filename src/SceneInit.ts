@@ -1,9 +1,16 @@
-import * as THREE from "three";
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { PerspectiveCamera, Scene, WebGLRenderer} from "three";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import Stats from "three/examples/jsm/libs/stats.module";
 
 export default class SceneInit {
-  constructor(fov = 36, camera, scene, stats, controls, renderer) {
+    fov: number;
+    scene: any;
+    stats: any;
+    camera: any;
+    controls: any;
+    renderer: any;
+
+  constructor(fov = 36, camera = null, scene = null, stats = null, controls = null, renderer = null) {
     this.fov = fov;
     this.scene = scene;
     this.stats = stats;
@@ -13,7 +20,7 @@ export default class SceneInit {
   }
 
   initScene() {
-    this.camera = new THREE.PerspectiveCamera(
+    this.camera = new PerspectiveCamera(
       this.fov,
       window.innerWidth / window.innerHeight,
       1,
@@ -21,17 +28,20 @@ export default class SceneInit {
     );
     this.camera.position.z = 128;
 
-    this.scene = new THREE.Scene();
-
-    // const spaceTexture = new THREE.TextureLoader().load("space2.jpeg");
-    // this.scene.background = spaceTexture;
+    this.scene = new Scene();
 
     // specify a canvas which is already created in the HTML file and tagged by an id
     // aliasing enabled
-    this.renderer = new THREE.WebGLRenderer({
-      canvas: document.getElementById("canvas"),
-      antialias: true,
-    });
+    const element = document.getElementById("canvas");
+    if (element) {
+        this.renderer = new WebGLRenderer({
+            canvas: element,
+            antialias: true,
+        });
+    } else {
+        throw new Error("HTML Canvas element not found.");
+    }
+
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     document.body.appendChild(this.renderer.domElement);
 
@@ -40,27 +50,13 @@ export default class SceneInit {
     this.stats = Stats();
     document.body.appendChild(this.stats.dom);
 
-    // ambient light which is for the whole scene
-    // let ambientLight = new THREE.AmbientLight(0xffffff, 0.7);
-    // ambientLight.castShadow = false;
-    // this.scene.add(ambientLight);
-
-    // spot light which is illuminating the chart directly
-    // let spotLight = new THREE.SpotLight(0xffffff, 0.55);
-    // spotLight.castShadow = true;
-    // spotLight.position.set(0, 40, 10);
-    // this.scene.add(spotLight);
-
-    // if window resizes
     window.addEventListener("resize", () => this.onWindowResize(), false);
   }
 
   animate() {
-    // requestAnimationFrame(this.animate.bind(this));
     window.requestAnimationFrame(this.animate.bind(this));
     this.render();
     this.stats.update();
-    // this.controls.update();
   }
 
   render() {
