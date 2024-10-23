@@ -38,7 +38,7 @@ function App() {
 
     const animate = () => {
       list.forEach((planet, index) => {
-        planet.rotation.y += solarSystemList[index].rotation;
+        planet.rotation.y += solarSystemList[index].year;
       });
       requestAnimationFrame(animate);
     };
