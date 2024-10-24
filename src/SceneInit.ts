@@ -39,7 +39,8 @@ export default class SceneInit {
             antialias: true,
         });
     } else {
-        throw new Error("HTML Canvas element not found.");
+        // throw new Error("HTML Canvas element not found.");
+        console.warn("no canvas found")
     }
 
     this.renderer.setSize(window.innerWidth, window.innerHeight);
