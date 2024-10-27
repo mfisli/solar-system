@@ -1,5 +1,5 @@
 import { Mesh, MeshBasicMaterial, SphereGeometry,TextureLoader } from "three";
-import { SystemItemInterface } from "./constants/solarSystem";
+import { PlanetProps } from "./constants/solarSystem";
 
 export default class SystemItem {
   radius: number;
@@ -7,7 +7,7 @@ export default class SystemItem {
   textureFile: string;
   mesh: Mesh | undefined;
 
-  constructor(planet: SystemItemInterface) {
+  constructor(planet: PlanetProps) {
     this.radius = planet.radius;
     this.positionX = planet.positionX;
     this.textureFile = planet.textureFile;

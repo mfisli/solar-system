@@ -5,31 +5,42 @@ import earthImg from "../assets/earth.jpeg"
 import marsImg from "../assets/mars.jpeg"
 import jupiterImg from "../assets/jupiter.jpeg"
 import saturnImg from "../assets/saturn.jpeg"
+import saturnRingImg from "../assets/saturn-ring.png";
 import uranusImg from "../assets/uranus.jpeg"
+import uranusRingImg from "../assets/uranus-ring.png";
 import neptuneImg from "../assets/neptune.jpeg"
 
-export interface SystemItemInterface {
+export interface PlanetProps {
     id: string;
     name: string;
     radius: number;    // KM instead?
     positionX: number; // Astronomical unit instead?
     textureFile: string;
     year: number;  // km/h instead? Earth is 1670 km/h, sun 7,189 km/h
+    ring?: {
+        innerRadius: number,
+        outerRadius: number,
+        thetaSegments: number,
+        rotationX: number,
+        rotationY: number,
+        textureFile: string;
+    }
+    // tilt: number // degrees
 }
 
-const earthYear = 2 * Math.PI * (1 / 60) * (1 / 60);
-const earthRadius = 0.063 // 6,371km
-const astronomicalUnit = 149.5 // 149,597,870.7 km
+const earthYear = 2 * Math.PI * (1 / 120) * (1 / 120);
+const earthRadius = 6.3 // 6,371km
+const astronomicalUnit = 149.5 * .90 // 149,597,870.7 km
 
-export const solarSystemList: SystemItemInterface[] = [
-    {
-        id: "sun",
-        name: "sun",
-        radius: earthRadius * 109, // 695,700 
-        positionX: 0,
-        textureFile: sunImg,
-        year: 0.001 // TODO: relative to earth
-    },
+export const solarSystemList: PlanetProps[] = [
+    // {
+    //     id: "sun",
+    //     name: "sun",
+    //     radius: earthRadius * 109, // 695,700 
+    //     positionX: 0,
+    //     textureFile: sunImg,
+    //     year: 0.001 // TODO: relative to earth
+    // },
     {
         id: "mercury",
         name: "mercury",
@@ -76,7 +87,15 @@ export const solarSystemList: SystemItemInterface[] = [
         radius: earthRadius * 9.14,
         positionX: astronomicalUnit * 9.54,
         textureFile: saturnImg,
-        year: earthYear * 0.03 // 365 / 10847.92
+        year: earthYear * 0.03, // 365 / 10847.92
+        ring: {
+            textureFile: saturnRingImg,
+            innerRadius: earthRadius * 10,
+            outerRadius: earthRadius * 20,
+            thetaSegments: earthRadius * 30,
+            rotationX: -0.5 * Math.PI,
+            rotationY: -0.1 * Math.PI
+        }
     },
     {
         id: "uranus",
@@ -84,7 +103,15 @@ export const solarSystemList: SystemItemInterface[] = [
         radius: earthRadius * 3.98,
         positionX: astronomicalUnit * 19.22,
         textureFile: uranusImg,
-        year: earthYear * 0.011 // 365 / 30790.58
+        year: earthYear * 0.011, // 365 / 30790.58
+        ring: {
+            textureFile: uranusRingImg,
+            innerRadius: earthRadius * 7,
+            outerRadius: earthRadius * 12,
+            thetaSegments: earthRadius * 30,
+            rotationX: -0.5 * Math.PI,
+            rotationY: -0.1 * Math.PI
+        }
     },
     {
         id: "neptune",

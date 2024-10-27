@@ -1,15 +1,15 @@
 import React, { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { Object3D } from 'three'
+import { InstancedMesh, Object3D } from 'three'
 
 const Stars = ({ count = 5000 }) => {
-    const meshRef = useRef()
+    const meshRef = useRef<InstancedMesh | null>(null)
 
     // Pre-generate positions for the stars
     const positions = useMemo(() => {
         const positions = []
 
-        const minDistance = 500
+        const minDistance = 1000
 
         for (let i = 0; i < count; i++) {
             const distance = minDistance + Math.random() * 4500
@@ -43,7 +43,7 @@ const Stars = ({ count = 5000 }) => {
     useFrame(() => {
         if (!meshRef.current) return
 
-        meshRef.current.rotation.y += 0.0001
+        meshRef.current.rotation.y += 0.00004
     })
 
     return (

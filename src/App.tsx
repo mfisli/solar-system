@@ -9,7 +9,7 @@ import { Canvas } from '@react-three/fiber'
 import Rotation from './Rotation';
 import { OrbitControls } from '@react-three/drei'
 import Scene from './components/Scene';
-import { Bloom, EffectComposer } from '@react-three/postprocessing';
+import { Bloom, EffectComposer, GodRays, } from '@react-three/postprocessing';
 
 function App() {
 
@@ -48,12 +48,12 @@ function App() {
     <main>
       <Canvas camera={{ position: [0, 50, 150], far: 200000 }}>
         <color attach='background' args={['black']} />
-        <ambientLight intensity={0.25} />
-        <OrbitControls maxDistance={450} minDistance={50} makeDefault />
+        <ambientLight intensity={0.09} />
+        <OrbitControls maxDistance={2000} minDistance={50} makeDefault />
         <Scene />
-        <EffectComposer>
-          <Bloom luminanceThreshold={0} luminanceSmoothing={0.9} height={150} />
-        </EffectComposer>
+        {/* <EffectComposer>
+          <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} height={300} />
+        </EffectComposer> */}
       </Canvas>
       {/* <canvas id="canvas"></canvas> */}
     </main>

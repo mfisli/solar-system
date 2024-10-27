@@ -1,19 +1,20 @@
 import { shaderMaterial, useTexture } from "@react-three/drei";
 import sunImg from "../assets/sun.jpeg"
-import { emissive, Material, materialOpacity, Mesh, ShaderMaterial } from "three/webgpu";
+import { emissive, Material, materialOpacity, Mesh, ShaderMaterial, SphereGeometry } from "three/webgpu";
 import { extend, useFrame } from "@react-three/fiber";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import noise from '../shaders/noise.glsl';
+import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 
 const sunRotationY = 0.0002; // move to constants
 
 const Sun = () => {
-    const rotationRef = useRef<Mesh | null>(null);
-    const shaderRef = useRef<ShaderMaterial | null>()
+    const [sunRef, sunRefCurrent] = useState<Mesh | null>(null);
+    const shaderRef = useRef<ShaderMaterial | null>(null)
 
     useFrame(({ clock }) => {
-        if (rotationRef.current) {
-            rotationRef.current.rotation.y += sunRotationY;
+        if (sunRef) {
+            sunRef.rotation.y += sunRotationY;
         }
         if (shaderRef.current) {
             shaderRef.current.uniforms.time.value = clock.elapsedTime * 0.4;
@@ -61,10 +62,27 @@ const Sun = () => {
 
     return (
         // do I need rotation-x={Math.PI * 0.25}?
-        <mesh ref={rotationRef} rotation-y={Math.PI * 0.25}>
+        <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25}>
             <sphereGeometry args={[32, 32, 32]} />
             {/* <meshStandardMaterial {...materialProps} /> */}
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
+            <pointLight position={[0, 0, 0]} intensity={95000} color={'rgb(255, 207, 55)'} />
+            {sunRef &&
+                <EffectComposer>
+                    <GodRays
+                        sun={sunRef}
+                        // blendFunction={BlendFunction.Screen}
+                        samples={30}
+                        density={0.97}
+                        decay={0.96}
+                        weight={0.6}
+                        exposure={0.008}
+                        clampMax={1}
+                        blur={true}
+                    />
+                    <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} height={300} />
+                </EffectComposer>
+            }
         </mesh>
     )
 }
