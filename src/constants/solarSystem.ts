@@ -1,7 +1,10 @@
 import sunImg from "../assets/sun.jpeg"
 import mercuryImg from "../assets/mercury.jpeg"
 import venusImg from "../assets/venus.jpeg"
-import earthImg from "../assets/earth.jpeg"
+import earthImg from "../assets/earth.jpg"
+import earthBump from "../assets/earthBump.jpg"
+import earthSpec from "../assets/earthSpec.jpg"
+import earthAtmophere from "../assets/earthCloud.jpg"
 import marsImg from "../assets/mars.jpeg"
 import jupiterImg from "../assets/jupiter.jpeg"
 import saturnImg from "../assets/saturn.jpeg"
@@ -16,6 +19,9 @@ export interface PlanetProps {
     radius: number;    // KM instead?
     positionX: number; // Astronomical unit instead?
     textureFile: string;
+    bumpFile?: string;
+    specFile?: string;
+    atmosphereFile?: string;
     year: number;  // km/h instead? Earth is 1670 km/h, sun 7,189 km/h
     ring?: {
         innerRadius: number,
@@ -63,6 +69,9 @@ export const solarSystemList: PlanetProps[] = [
         radius: earthRadius,
         positionX: astronomicalUnit,
         textureFile: earthImg,
+        bumpFile: earthBump,
+        specFile: earthSpec,
+        atmosphereFile: earthAtmophere,
         year: earthYear
     },
     {

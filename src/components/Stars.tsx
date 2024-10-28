@@ -47,7 +47,7 @@ const Stars = ({ count = 5000 }) => {
     })
 
     return (
-        <instancedMesh ref={meshRef} args={[null, null, count]}>
+        <instancedMesh ref={meshRef} args={[undefined, undefined, count]}>
             <dodecahedronGeometry args={[0.4, 0]} />
             <meshBasicMaterial attach='material' color='white' />
         </instancedMesh>
