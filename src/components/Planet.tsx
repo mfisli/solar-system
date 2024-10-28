@@ -1,16 +1,20 @@
 import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
-import { useContext, useMemo, useRef } from "react";
+import { useContext, useMemo, useRef, useState } from "react";
 import { Color, DoubleSide, Mesh, MeshPhongMaterial, TextureLoader } from "three";
 import { PlanetProps } from "../constants/solarSystem";
 import { MeshBasicNodeMaterial } from "three/webgpu";
 import { CameraContext } from "../context/Camera";
+import { useCursor } from "@react-three/drei";
 
 const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
+    const materialRef = useRef<MeshPhongMaterial | null>(null);
     const atmosphereRef = useRef<Mesh | null>(null);
 
-    const { handleFocus } = useContext(CameraContext)
+    const { handleFocus } = useContext(CameraContext);
+    const [isHovered, setIsHovered] = useState(false);
+    useCursor(isHovered);
 
     useFrame(() => {
         if (groupRef.current) {
@@ -41,10 +45,10 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     }
 
     return (
-        <object3D ref={groupRef} onClick={handleClick}>
+        <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
             <mesh ref={sphereRef} castShadow receiveShadow position-x={positionX}>
                 <sphereGeometry args={[radius, 32, 32]} />
-                <meshPhongMaterial map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
+                <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
             </mesh >
             {
                 atmosphere &&
