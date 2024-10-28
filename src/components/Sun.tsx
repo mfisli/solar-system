@@ -2,15 +2,18 @@ import { shaderMaterial, useTexture } from "@react-three/drei";
 import sunImg from "../assets/sun.jpeg"
 import { emissive, Material, materialOpacity, Mesh, ShaderMaterial, SphereGeometry } from "three/webgpu";
 import { extend, useFrame } from "@react-three/fiber";
-import { useRef, useState } from "react";
+import { useContext, useRef, useState } from "react";
 import noise from '../shaders/noise.glsl';
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
+import { CameraContext } from "../context/Camera";
 
 const sunRotationY = 0.0002; // move to constants
 
 const Sun = () => {
     const [sunRef, sunRefCurrent] = useState<Mesh | null>(null);
-    const shaderRef = useRef<ShaderMaterial | null>(null)
+    const shaderRef = useRef<ShaderMaterial | null>(null);
+
+    const { handleFocus } = useContext(CameraContext)
 
     useFrame(({ clock }) => {
         if (sunRef) {
@@ -62,16 +65,14 @@ const Sun = () => {
 
     return (
         // do I need rotation-x={Math.PI * 0.25}?
-        <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25}>
+        <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25} onClick={handleFocus}>
             <sphereGeometry args={[32, 32, 32]} />
-            {/* <meshStandardMaterial {...materialProps} /> */}
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
             <pointLight position={[0, 0, 0]} intensity={95000} color={'rgb(255, 207, 55)'} />
             {sunRef &&
                 <EffectComposer>
                     <GodRays
                         sun={sunRef}
-                        // blendFunction={BlendFunction.Screen}
                         samples={30}
                         density={0.97}
                         decay={0.96}
@@ -80,7 +81,7 @@ const Sun = () => {
                         clampMax={1}
                         blur={true}
                     />
-                    <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} height={300} />
+                    <Bloom luminanceThreshold={0.1} luminanceSmoothing={1} height={300} />
                 </EffectComposer>
             }
         </mesh>

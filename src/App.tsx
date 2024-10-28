@@ -49,11 +49,8 @@ function App() {
       <Canvas camera={{ position: [0, 50, 150], far: 200000 }}>
         <color attach='background' args={['black']} />
         <ambientLight intensity={0.09} />
-        <OrbitControls maxDistance={2000} minDistance={50} makeDefault />
+        <OrbitControls enablePan={false} maxDistance={2000} minDistance={50} makeDefault />
         <Scene />
-        {/* <EffectComposer>
-          <Bloom luminanceThreshold={0.1} luminanceSmoothing={0.9} height={300} />
-        </EffectComposer> */}
       </Canvas>
       {/* <canvas id="canvas"></canvas> */}
     </main>

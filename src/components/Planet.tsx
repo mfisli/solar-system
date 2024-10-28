@@ -1,17 +1,22 @@
-import { useFrame, useLoader } from "@react-three/fiber";
-import { useMemo, useRef } from "react";
+import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
+import { useContext, useMemo, useRef } from "react";
 import { Color, DoubleSide, Mesh, MeshPhongMaterial, TextureLoader } from "three";
 import { PlanetProps } from "../constants/solarSystem";
 import { MeshBasicNodeMaterial } from "three/webgpu";
+import { CameraContext } from "../context/Camera";
 
-const Planet = ({ textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
+const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
     const atmosphereRef = useRef<Mesh | null>(null);
 
+    const { handleFocus } = useContext(CameraContext)
+
     useFrame(() => {
         if (groupRef.current) {
             groupRef.current.rotateY(year);
+            // groupRef.current.userData = { key: id }
+            // console.log("userData", groupRef.current.userData)
         }
         if (sphereRef.current) {
             // FIXME: placeholder year; should be 24h relative
@@ -30,25 +35,32 @@ const Planet = ({ textureFile, bumpFile, specFile, atmosphereFile, positionX, ra
 
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
+    const handleClick = (event: ThreeEvent<MouseEvent>) => {
+        event.object.userData = { id };
+        handleFocus(event);
+    }
+
     return (
-        <object3D ref={groupRef}>
+        <object3D ref={groupRef} onClick={handleClick}>
             <mesh ref={sphereRef} castShadow receiveShadow position-x={positionX}>
                 <sphereGeometry args={[radius, 32, 32]} />
                 <meshPhongMaterial map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
-            </mesh>
-            {atmosphere &&
-                <mesh ref={atmosphereRef} position-x={positionX}>
+            </mesh >
+            {
+                atmosphere &&
+                <mesh ref={atmosphereRef} position-x={positionX} >
                     <sphereGeometry args={[radius + 0.1, 32, 32]} />
                     <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
                 </mesh>
             }
-            {ring &&
+            {
+                ring &&
                 <mesh castShadow receiveShadow position-x={positionX} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
                     <ringGeometry args={[ring.innerRadius, ring.outerRadius, ring.thetaSegments]} />
                     <meshPhongMaterial map={ringTexture} side={DoubleSide} />
                 </mesh>
             }
-        </object3D>
+        </object3D >
     )
 }
 
