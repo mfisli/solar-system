@@ -48,10 +48,10 @@ function App() {
   return (
     <main>
       <ScaleProvider>
-        <Canvas camera={{ fov: 45, position: [140, 100, 150], far: 200000 }}>
+        <Canvas camera={{ fov: 45, position: [10, 10, 150], far: 200000 }}>
           <color attach='background' args={['black']} />
           <ambientLight intensity={0.09} />
-          <OrbitControls enablePan={false} maxDistance={2000} minDistance={50} makeDefault target={[0, 0, 0]} />
+          <OrbitControls enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
           <Scene />
         </Canvas>
         {/* <canvas id="canvas"></canvas> */}

@@ -18,9 +18,14 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     const orbitRef = useRef();
 
     const positionXScale = useMemo(() => {
-        console.log(id, scale * positionX)
-        return scale * positionX;
-    }, [scale])
+        // console.log(id, scale.astronomicalUnit * positionX)
+        return scale.astronomicalUnit * positionX;
+    }, [scale.astronomicalUnit]);
+
+    const radiusScale = useMemo(() => {
+        // console.log(id, scale.relativeRadius * radius)
+        return scale.relativeRadius * radius;
+    }, [scale.relativeRadius]);
 
     const curve = useMemo(() => {
         const curve = new EllipseCurve(0, 0, positionXScale, positionXScale, 0, 2 * Math.PI);
@@ -70,7 +75,7 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.object.userData = { id, radius };
+        event.object.userData = { id, radiusScale };
         handleFocus(event);
     }
     //  rotateX={-Math.PI/2}  rotation={[-Math.PI / 2, 0, 0]}
@@ -83,20 +88,20 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
             </line> */}
             <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
                 <mesh ref={sphereRef} castShadow receiveShadow position-x={positionXScale}>
-                    <sphereGeometry args={[radius, 32, 32]} />
+                    <sphereGeometry args={[radiusScale, 32, 32]} />
                     <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
                 </mesh >
                 {
                     atmosphere &&
                     <mesh ref={atmosphereRef} position-x={positionXScale} >
-                        <sphereGeometry args={[radius + 0.1, 32, 32]} />
+                        <sphereGeometry args={[radiusScale + 0.01, 32, 32]} />
                         <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
                     </mesh>
                 }
                 {
                     ring &&
                     <mesh castShadow receiveShadow position-x={positionXScale} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
-                        <ringGeometry args={[ring.innerRadius, ring.outerRadius, ring.thetaSegments]} />
+                        <ringGeometry args={[ring.innerRadius * radiusScale, ring.outerRadius * radiusScale, ring.thetaSegments]} />
                         <meshPhongMaterial map={ringTexture} side={DoubleSide} />
                     </mesh>
                 }

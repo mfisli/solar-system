@@ -7,6 +7,7 @@ import noise from '../shaders/noise.glsl';
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 import { CameraContext } from "../context/Camera";
 import { Text } from '@react-three/drei'
+import { earthRadius } from "../constants/solarSystem";
 
 const sunRotationY = 0.0002; // move to constants
 
@@ -14,6 +15,7 @@ const Sun = () => {
     const [sunRef, sunRefCurrent] = useState<Mesh | null>(null);
     const shaderRef = useRef<ShaderMaterial | null>(null);
 
+    const sunRadius = earthRadius * 109;
 
     const { handleFocus } = useContext(CameraContext)
 
@@ -73,9 +75,9 @@ const Sun = () => {
     return (
         // do I need rotation-x={Math.PI * 0.25}?
         <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25} onClick={handleClick}>
-            <sphereGeometry args={[32, 32, 32]} />
+            <sphereGeometry args={[sunRadius, 32, 32]} />
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
-            <pointLight position={[0, 0, 0]} intensity={95000} color={'rgb(255, 207, 55)'} />
+            <pointLight position={[0, 0, 0]} intensity={9500} color={'rgb(255, 207, 55)'} />
             {sunRef &&
                 <EffectComposer>
                     <GodRays
@@ -89,6 +91,7 @@ const Sun = () => {
                         blur={true}
                     />
                     <Bloom luminanceThreshold={0.1} luminanceSmoothing={1} height={300} />
+                    {/* <Bloom intensity={0.2} radius={1} /> */}
                 </EffectComposer>
             }
         </mesh>

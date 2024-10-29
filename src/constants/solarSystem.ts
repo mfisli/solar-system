@@ -41,9 +41,9 @@ export interface PlanetProps {
     // tilt: number // degrees
 }
 
-const earthYear = 2 * Math.PI * (1 / 120) * (1 / 120);
-const earthRadius = 6.3 // 6,371km
-export const astronomicalUnit = 149.5 * .90 // 149,597,870.7 km
+const earthYear = (2 * Math.PI * (1 / 120) * (1 / 120)) * 0.3;
+export const earthRadius = 0.06371 // 6,371km
+export const astronomicalUnit = 1495.97870 // 149,597,870.7 km
 
 export const solarSystemList: PlanetProps[] = [
     // {
@@ -57,7 +57,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "mercury",
         name: "mercury",
-        radius: earthRadius * 0.3,
+        radius: 0.3,
         positionX: 0.39,
         textureFile: mercuryImg,
         year: earthYear * 4.14 // 365 / 88
@@ -65,7 +65,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "venus",
         name: "venus",
-        radius: earthRadius * 0.94,
+        radius: 0.94,
         positionX: 0.72,
         textureFile: venusImg,
         year: earthYear * 1.62 // 365 / 224.7
@@ -73,7 +73,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "earth",
         name: "earth",
-        radius: earthRadius,
+        radius: 1,
         positionX: 1,
         textureFile: earthImg,
         bumpFile: earthBump,
@@ -84,7 +84,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "mars",
         name: "mars",
-        radius: earthRadius * 0.53,
+        radius: 0.53,
         positionX: 1.52,
         textureFile: marsImg,
         year: earthYear * 0.52 // 365 / 699.584
@@ -92,7 +92,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "jupiter",
         name: "jupiter",
-        radius: earthRadius * 10.97,
+        radius: 10.97,
         positionX: 5.20,
         textureFile: jupiterImg,
         year: earthYear * 0.08 // 365 / 4346.475
@@ -100,15 +100,15 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "saturn",
         name: "saturn",
-        radius: earthRadius * 9.14,
+        radius: 9.14,
         positionX: 9.54,
         textureFile: saturnImg,
         year: earthYear * 0.03, // 365 / 10847.92
         ring: {
             textureFile: saturnRingImg,
-            innerRadius: earthRadius * 10,
-            outerRadius: earthRadius * 20,
-            thetaSegments: earthRadius * 30,
+            innerRadius: 1,
+            outerRadius: 2,
+            thetaSegments: 30,
             rotationX: -0.5 * Math.PI,
             rotationY: -0.1 * Math.PI
         }
@@ -116,15 +116,15 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "uranus",
         name: "uranus",
-        radius: earthRadius * 3.98,
+        radius: 3.98,
         positionX: 19.22,
         textureFile: uranusImg,
         year: earthYear * 0.011, // 365 / 30790.58
         ring: {
             textureFile: uranusRingImg,
-            innerRadius: earthRadius * 7,
-            outerRadius: earthRadius * 12,
-            thetaSegments: earthRadius * 30,
+            innerRadius: 2.8, // 7
+            outerRadius: 3, // 12
+            thetaSegments: 30,
             rotationX: -0.5 * Math.PI,
             rotationY: -0.1 * Math.PI
         }
@@ -132,7 +132,7 @@ export const solarSystemList: PlanetProps[] = [
     {
         id: "neptune",
         name: "neptune",
-        radius: earthRadius * 3.86,
+        radius: 3.86,
         positionX: 30.06,
         textureFile: neptuneImg,
         year: earthYear * 0.006 // 365 / 60193.2

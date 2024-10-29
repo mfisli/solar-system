@@ -32,7 +32,7 @@ export const CameraProvider = ({ children }) => {
         targetPosition.current = new Vector3().setFromMatrixPosition(focus.matrixWorld);
         camera.lookAt(targetPosition.current);
         // camera.position.lerp(targetPosition.current, 0.05);
-        controls.minDistance = focus.userData.radius + 10;
+        // controls.minDistance = focus.userData.radius * 5000000;
         controls.target.copy(targetPosition.current);
         controls.update();
     });
