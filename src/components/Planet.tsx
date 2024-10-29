@@ -1,22 +1,46 @@
-import { ThreeEvent, useFrame, useLoader } from "@react-three/fiber";
-import { useContext, useMemo, useRef, useState } from "react";
-import { Color, DoubleSide, Mesh, MeshPhongMaterial, TextureLoader } from "three";
+import { Camera, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
+import { RefObject, useContext, useMemo, useRef, useState } from "react";
+import { BufferGeometry, Color, DoubleSide, EllipseCurve, Mesh, MeshPhongMaterial, TextureLoader, Vector3 } from "three";
 import { PlanetProps } from "../constants/solarSystem";
 import { MeshBasicNodeMaterial } from "three/webgpu";
 import { CameraContext } from "../context/Camera";
-import { useCursor } from "@react-three/drei";
+import { Line, useCursor } from "@react-three/drei";
+import { Billboard, Text } from '@react-three/drei'
+import { Line2 } from "three/examples/jsm/lines/Line2.js";
+import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
 
 const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
     const materialRef = useRef<MeshPhongMaterial | null>(null);
     const atmosphereRef = useRef<Mesh | null>(null);
+    const orbitRef = useRef();
+
+    const curve = useMemo(() => {
+        const curve = new EllipseCurve(0, 0, positionX, positionX, 0, 2 * Math.PI);
+        return curve;
+    }, [])
+
+    const { camera }: { camera: Camera } = useThree();
 
     const { handleFocus } = useContext(CameraContext);
     const [isHovered, setIsHovered] = useState(false);
     useCursor(isHovered);
 
-    useFrame(() => {
+    const orbitSpeed = 0.00001;
+
+    useFrame(({ clock }) => {
+        if (!curve || !groupRef.current) {
+            return;
+        }
+        // const geo = new BufferGeometry().setFromPoints(curve.getSpacedPoints(200));
+        // geo.rotateX(-Math.PI/2);
+        // const time = orbitSpeed * clock.elapsedTime;
+        // const travel = (time % year) / year;
+        // let points = geo.getPoint(travel);
+        // groupRef.current.position.x = points.x;
+        // groupRef.current.position.y = points.y;
+
         if (groupRef.current) {
             groupRef.current.rotateY(year);
             // groupRef.current.userData = { key: id }
@@ -40,31 +64,38 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.object.userData = { id };
+        event.object.userData = { id, radius };
         handleFocus(event);
     }
-
+    //  rotateX={-Math.PI/2}  rotation={[-Math.PI / 2, 0, 0]}
     return (
-        <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
-            <mesh ref={sphereRef} castShadow receiveShadow position-x={positionX}>
-                <sphereGeometry args={[radius, 32, 32]} />
-                <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
-            </mesh >
-            {
-                atmosphere &&
-                <mesh ref={atmosphereRef} position-x={positionX} >
-                    <sphereGeometry args={[radius + 0.1, 32, 32]} />
-                    <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
-                </mesh>
-            }
-            {
-                ring &&
-                <mesh castShadow receiveShadow position-x={positionX} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
-                    <ringGeometry args={[ring.innerRadius, ring.outerRadius, ring.thetaSegments]} />
-                    <meshPhongMaterial map={ringTexture} side={DoubleSide} />
-                </mesh>
-            }
-        </object3D >
+        <>
+            <Line ref={orbitRef} points={curve.getSpacedPoints(200)} color="pink" lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
+            {/* <line ref={orbitRef} >
+                <bufferGeometry setFromPoints={curve.getSpacedPoints(200)} />
+                <lineBasicMaterial color="pink" linewidth={1} />
+            </line> */}
+            <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
+                <mesh ref={sphereRef} castShadow receiveShadow position-x={positionX}>
+                    <sphereGeometry args={[radius, 32, 32]} />
+                    <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
+                </mesh >
+                {
+                    atmosphere &&
+                    <mesh ref={atmosphereRef} position-x={positionX} >
+                        <sphereGeometry args={[radius + 0.1, 32, 32]} />
+                        <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
+                    </mesh>
+                }
+                {
+                    ring &&
+                    <mesh castShadow receiveShadow position-x={positionX} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
+                        <ringGeometry args={[ring.innerRadius, ring.outerRadius, ring.thetaSegments]} />
+                        <meshPhongMaterial map={ringTexture} side={DoubleSide} />
+                    </mesh>
+                }
+            </object3D>
+        </>
     )
 }
 
