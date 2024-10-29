@@ -4,22 +4,28 @@ import { BufferGeometry, Color, DoubleSide, EllipseCurve, Mesh, MeshPhongMateria
 import { PlanetProps } from "../constants/solarSystem";
 import { MeshBasicNodeMaterial } from "three/webgpu";
 import { CameraContext } from "../context/Camera";
+import { ScaleContext } from "../context/Scale";
 import { Line, useCursor } from "@react-three/drei";
-import { Billboard, Text } from '@react-three/drei'
-import { Line2 } from "three/examples/jsm/lines/Line2.js";
-import { LineSegments2 } from "three/examples/jsm/lines/LineSegments2.js";
+
 
 const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
+    const scale = useContext(ScaleContext);
+
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
     const materialRef = useRef<MeshPhongMaterial | null>(null);
     const atmosphereRef = useRef<Mesh | null>(null);
     const orbitRef = useRef();
 
+    const positionXScale = useMemo(() => {
+        console.log(id, scale * positionX)
+        return scale * positionX;
+    }, [scale])
+
     const curve = useMemo(() => {
-        const curve = new EllipseCurve(0, 0, positionX, positionX, 0, 2 * Math.PI);
+        const curve = new EllipseCurve(0, 0, positionXScale, positionXScale, 0, 2 * Math.PI);
         return curve;
-    }, [])
+    }, [positionXScale]);
 
     const { camera }: { camera: Camera } = useThree();
 
@@ -70,26 +76,26 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     //  rotateX={-Math.PI/2}  rotation={[-Math.PI / 2, 0, 0]}
     return (
         <>
-            <Line ref={orbitRef} points={curve.getSpacedPoints(200)} color="pink" lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
+            <Line points={curve.getSpacedPoints(200)} color="white" transparent opacity={0.05} lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
             {/* <line ref={orbitRef} >
                 <bufferGeometry setFromPoints={curve.getSpacedPoints(200)} />
                 <lineBasicMaterial color="pink" linewidth={1} />
             </line> */}
             <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
-                <mesh ref={sphereRef} castShadow receiveShadow position-x={positionX}>
+                <mesh ref={sphereRef} castShadow receiveShadow position-x={positionXScale}>
                     <sphereGeometry args={[radius, 32, 32]} />
                     <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
                 </mesh >
                 {
                     atmosphere &&
-                    <mesh ref={atmosphereRef} position-x={positionX} >
+                    <mesh ref={atmosphereRef} position-x={positionXScale} >
                         <sphereGeometry args={[radius + 0.1, 32, 32]} />
                         <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
                     </mesh>
                 }
                 {
                     ring &&
-                    <mesh castShadow receiveShadow position-x={positionX} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
+                    <mesh castShadow receiveShadow position-x={positionXScale} rotation-x={ring.rotationX} rotation-y={ring.rotationY}>
                         <ringGeometry args={[ring.innerRadius, ring.outerRadius, ring.thetaSegments]} />
                         <meshPhongMaterial map={ringTexture} side={DoubleSide} />
                     </mesh>

@@ -10,6 +10,7 @@ import Rotation from './Rotation';
 import { OrbitControls } from '@react-three/drei'
 import Scene from './components/Scene';
 import { Bloom, EffectComposer, GodRays, } from '@react-three/postprocessing';
+import { ScaleProvider } from './context/Scale';
 
 function App() {
 
@@ -46,13 +47,15 @@ function App() {
 
   return (
     <main>
-      <Canvas camera={{ position: [0, 50, 150], far: 200000 }}>
-        <color attach='background' args={['black']} />
-        <ambientLight intensity={0.09} />
-        <OrbitControls enablePan={false} maxDistance={2000} minDistance={50} makeDefault />
-        <Scene />
-      </Canvas>
-      {/* <canvas id="canvas"></canvas> */}
+      <ScaleProvider>
+        <Canvas camera={{ fov: 45, position: [140, 100, 150], far: 200000 }}>
+          <color attach='background' args={['black']} />
+          <ambientLight intensity={0.09} />
+          <OrbitControls enablePan={false} maxDistance={2000} minDistance={50} makeDefault target={[0, 0, 0]} />
+          <Scene />
+        </Canvas>
+        {/* <canvas id="canvas"></canvas> */}
+      </ScaleProvider>
     </main>
   )
 }
