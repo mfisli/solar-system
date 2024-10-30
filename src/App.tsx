@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import './App.css';
 import SceneInit from './SceneInit';
 import SystemItem from './SystemItem';
-import * as THREE from "three";
+import { PointLight } from "three";
 import { solarSystemList } from "./constants/solarSystem"
 import { Canvas } from '@react-three/fiber'
 
@@ -45,13 +45,27 @@ function App() {
   //   animate();
   // }, []);
 
+  const lightRef = useRef<PointLight>(null);
+
+  const handleControlChange = (event) => {
+    if (!event) {
+      return;
+    }
+    const camera = event.target.object;
+    if (lightRef.current) {
+      lightRef.current.position.set(0, 1, 0);
+      lightRef.current.position.add(camera.position);
+    }
+  }
+
   return (
     <main>
       <ScaleProvider>
         <Canvas camera={{ fov: 45, position: [10, 10, 150], far: 200000 }}>
           <color attach='background' args={['black']} />
           <ambientLight intensity={0.09} />
-          <OrbitControls enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
+          <pointLight ref={lightRef} position={[0, 0, 0]} intensity={5} decay={1} />
+          <OrbitControls onChange={(e) => handleControlChange(e)} enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
           <Scene />
         </Canvas>
         {/* <canvas id="canvas"></canvas> */}

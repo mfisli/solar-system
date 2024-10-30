@@ -68,7 +68,7 @@ const Sun = () => {
     extend({ CustomShaderMaterial });
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.object.userData = { id: 'sun', radius: 32 };
+        event.object.userData = { id: 'sun', radiusScale: sunRadius };
         handleFocus(event);
     }
 

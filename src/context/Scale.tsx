@@ -4,21 +4,21 @@ import { astronomicalUnit, earthRadius } from "../constants/solarSystem";
 interface ScaleContext {
     astronomicalUnit: number;
     relativeRadius: number;
+    isZoom?: boolean;
+}
+
+const defaultScale = {
+    astronomicalUnit: 36,
+    relativeRadius: earthRadius * 20
 }
 
 export const ScaleContext = createContext<ScaleContext>(
-    {
-        astronomicalUnit,
-        relativeRadius: earthRadius
-    }
+    defaultScale
 );
 
 export const ScaleProvider = ({ children }) => {
     const [scale, setScale] = useState<ScaleContext>(
-        {
-            astronomicalUnit: astronomicalUnit * 0.04,
-            relativeRadius: earthRadius * 20
-        }
+        defaultScale
     );
 
     const handleAUChange = (event) => {
@@ -34,13 +34,25 @@ export const ScaleProvider = ({ children }) => {
         });
     }
 
+    const handleZoomChange = () => {
+        setScale(prev => {
+            return { ...prev, isZoom: !prev.isZoom }
+        });
+    }
+
+    const handleReset = () => {
+        setScale(defaultScale);
+    }
+
     return (
         <>
             <span>Astronomical Unit Scale: {Math.ceil((scale.astronomicalUnit / astronomicalUnit) * 100)} %</span> <br />
             <input type="range" step={0.5} min={0} max={astronomicalUnit} value={scale.astronomicalUnit} onChange={handleAUChange} /> <br />
-
             <span>Relative Radius: {Math.ceil((scale.relativeRadius / earthRadius) * 100)} %</span> <br />
             <input type="range" step={0.000001} min={earthRadius} max={earthRadius * 50} value={scale.relativeRadius} onChange={handleRadiusChange} />
+            <button onClick={handleReset}>Reset</button>
+            <span>Zoom</span>
+            <input type="checkbox" onChange={handleZoomChange} />
             <ScaleContext.Provider value={scale}>
                 {children}
             </ScaleContext.Provider>

@@ -1,7 +1,8 @@
 import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import { createContext, useContext, useRef, useState } from "react";
-import { Camera, Matrix4, Object3D, Object3DEventMap, Vector3 } from "three";
+import { Camera, Matrix4, Object3D, Object3DEventMap, Vector3, SpotLight, PointLight, PointLightHelper } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
+import { ScaleContext } from "./Scale";
 
 interface CameraContextProps {
     focus: Object3D<Object3DEventMap> | null;
@@ -19,6 +20,7 @@ export const CameraContext = createContext<CameraContextProps>(defaultContext);
 
 export const CameraProvider = ({ children }) => {
     const { camera, controls }: { camera: Camera, controls: OrbitControls } = useThree();
+    const { isZoom } = useContext(ScaleContext);
 
     const targetPosition = useRef(new Vector3(0, 0, 0));
     console.log("controls", controls)
@@ -31,8 +33,11 @@ export const CameraProvider = ({ children }) => {
         }
         targetPosition.current = new Vector3().setFromMatrixPosition(focus.matrixWorld);
         camera.lookAt(targetPosition.current);
-        // camera.position.lerp(targetPosition.current, 0.05);
-        // controls.minDistance = focus.userData.radius * 5000000;
+        if (isZoom) {
+            camera.position.lerp(targetPosition.current, 0.05);
+        }
+        controls.minDistance = focus.userData.radiusScale * 3;
+        // console.log("focus.userData.radius * 5", focus.userData.radius * 5);
         controls.target.copy(targetPosition.current);
         controls.update();
     });
