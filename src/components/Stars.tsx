@@ -1,12 +1,11 @@
-import React, { useRef, useMemo, useEffect } from 'react'
+// https://github.com/theshanergy/solarsystem/blob/master/components/Stars.jsx
+import { useRef, useMemo, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { InstancedMesh, Object3D } from 'three'
-import { astronomicalUnit, solarSystemList } from '../constants/solarSystem'
 
 const Stars = ({ count = 5000 }) => {
     const meshRef = useRef<InstancedMesh | null>(null)
 
-    // Pre-generate positions for the stars
     const positions = useMemo(() => {
         const positions = [];
 
@@ -26,7 +25,6 @@ const Stars = ({ count = 5000 }) => {
         return new Float32Array(positions);
     }, [count]);
 
-    // Set the positions of the stars
     useEffect(() => {
         if (!meshRef.current) {
             return;
@@ -42,7 +40,6 @@ const Stars = ({ count = 5000 }) => {
         meshRef.current.instanceMatrix.needsUpdate = true;
     }, [count, positions])
 
-    // Animate the stars
     useFrame(() => {
         if (!meshRef.current) {
             return;

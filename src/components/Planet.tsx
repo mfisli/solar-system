@@ -1,14 +1,13 @@
-import { Camera, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
-import { RefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
-import { BufferGeometry, Color, DoubleSide, EllipseCurve, Mesh, MeshPhongMaterial, TextureLoader, Vector3 } from "three";
+import { useFrame, useLoader } from "@react-three/fiber";
+import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { DoubleSide, EllipseCurve, Mesh, MeshPhongMaterial, TextureLoader } from "three";
 import { PlanetProps } from "../constants/solarSystem";
-import { MeshBasicNodeMaterial, userData } from "three/webgpu";
 import { CameraContext, CameraFocus } from "../context/Camera";
 import { ViewContext } from "../context/View";
 import { Line, useCursor } from "@react-three/drei";
 
 
-const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
+const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmosphereThickness, positionX, radius, year, ring }: PlanetProps) => {
     const view = useContext(ViewContext);
     const { handleFocus } = useContext(CameraContext);
     const groupRef = useRef<Mesh | null>(null);
@@ -17,14 +16,12 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     const atmosphereRef = useRef<Mesh | null>(null);
 
     useEffect(() => {
-        console.log(id, view.targetId);
         if (view.targetId === id && sphereRef.current) {
             const target: CameraFocus = {
                 matrixWorld: sphereRef.current?.matrixWorld,
                 id,
                 radiusScale
             }
-            console.log("-", id, "calling")
             handleFocus(target);
         }
     }, [view.targetId])
@@ -53,12 +50,11 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
         if (groupRef.current) {
             groupRef.current.rotateY(year / (positionXScale * 0.09));
         }
+        // TODO: placeholder year; should be 24h relative rotation on axis
         if (sphereRef.current) {
-            // FIXME: placeholder year; should be 24h relative
             sphereRef.current.rotateY(year);
         }
         if (atmosphereRef.current) {
-            // FIXME: placeholder year; should be 24h relative
             atmosphereRef.current.rotateY(year * 0.8);
         }
     })
@@ -70,24 +66,15 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
 
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
-    const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        console.log("sphereRef.current", sphereRef.current)
-        // const target: CameraFocus = {
-        //     matrixWorld: event.object.matrixWorld,
-        //     id,
-        //     radiusScale
-        // }
-        const target: CameraFocus = {
+    const handleClick = () => {
+        if (!sphereRef.current?.matrixWorld) {
+            return;
+        }
+        handleFocus({
             matrixWorld: sphereRef.current?.matrixWorld,
             id,
             radiusScale
-        }
-        // if (event.object.matrixWorld === sphereRef.current?.matrixWorld) {
-        //     console.log("equal martix", event.object.matrixWorld, sphereRef.current.matrixWorld)
-        // } else {
-        //     console.log("diff matrix", event.object.matrixWorld, sphereRef.current.matrixWorld)
-        // }
-        handleFocus(target);
+        });
     }
 
     return (
@@ -101,10 +88,10 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
                     <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={15} specularMap={spec} shininess={0.5} />
                 </mesh >
                 {
-                    atmosphere &&
+                    atmosphere && atmosphereThickness &&
                     <mesh ref={atmosphereRef} position-x={positionXScale} >
                         <sphereGeometry args={[radiusScale * 1.02, 32, 32]} />
-                        <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
+                        <meshPhongMaterial map={atmosphere} transparent={true} opacity={atmosphereThickness} />
                     </mesh>
                 }
                 {

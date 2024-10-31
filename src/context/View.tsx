@@ -1,5 +1,6 @@
-import { createContext, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { astronomicalUnit, earthRadius, solarSystemList } from "../constants/solarSystem";
+import { id as sunId } from "../components/Sun";
 
 interface ViewSettingsContext {
     astronomicalUnit: number;
@@ -10,7 +11,7 @@ interface ViewSettingsContext {
     handleSetTarget: (id: string) => void
 }
 
-const targetList = ['sun', ...solarSystemList.map(item => item.id)];
+const targetList = [sunId, ...solarSystemList.map(item => item.id)];
 
 const defaultView: ViewSettingsContext = {
     astronomicalUnit: 36,
@@ -23,7 +24,7 @@ const defaultView: ViewSettingsContext = {
 
 export const ViewContext = createContext<ViewSettingsContext>(defaultView);
 
-export const ViewProvider = ({ children }) => {
+export const ViewProvider = ({ children }: { children: ReactNode }) => {
 
     const handleSetTarget = (targetId: string) => {
         if (targetList.includes(targetId)) {
@@ -37,14 +38,13 @@ export const ViewProvider = ({ children }) => {
     const [hideMenu, setHideMenu] = useState(false);
 
 
-    const handleAUChange = (event) => {
-        console.log("AU", event.target.value)
+    const handleAUChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setView(prev => {
             return { ...prev, astronomicalUnit: parseFloat(event.target.value) }
         });
     }
 
-    const handleRadiusChange = (event) => {
+    const handleRadiusChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setView(prev => {
             return { ...prev, relativeRadius: parseFloat(event.target.value) }
         });

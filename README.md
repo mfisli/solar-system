@@ -1,50 +1,130 @@
-# React + TypeScript + Vite
+# Solar System
+The purpose of this project is to model the solar system in a 3D enviroment with the sun and planets.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Local Setup
+- git clone
+- npm install
+- npm start
 
-Currently, two official plugins are available:
+## Tech Stack
+- Builder: Vite
+- Components: React
+- Language: TypeScript
+- State Management: useContext and useState hooks
+- Style: Pure CSS
+- 3D Rendering: Three JS + Tree-Fiber + Drei
+- Shaders: glsl
+- Testing: Jest + React Testing Lib (TODO)
+- Version Control: GitHub
+- Deploymnet: GitHub Actions + GitHub Pages
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## TODOS
+System Items
 
-## Expanding the ESLint configuration
+- Correct planet rotation on axis
+- Pitch / tilt of planets
+- ~~ Add scale to items (relative to earth radius) ~~
+- ~~ Scale ~~
+  - ~~ Initial values ~~
+  - ~~ Correct scale between AU and radius ~~
+- Add moons
+- Asteroid belt
+- ~~ Rings (eg saturn) ~~
+- ~~ Background stars / skybox ~~
+- Ort Cloud
+- Floating labels for planet names
+- ~~ Orbit rings / paths ~~
+- Well known comets + orbit
+- Well known human-made satellites + travel paths
+- Floating labels pointing to famous characteristics
+  - eg Jupiter's big red dot, Saturn's hex shaped polar storm
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+View Settings
+- ~~ Range input for AU ~~
+- ~~ Range input for planet radius ~~
+- ~~ Prev, next plant focus ~~
+- ~~ Checkbox fixed zoom ~~
+- ~~ Checkbox show orbit lines ~~
+- ~~ Reset ~~
+- ~~ Link to personal site ~~
+- ~~ Toggle show menu ~~
 
-- Configure the top-level `parserOptions` property like this:
+Camera
+- ~~ On click focus for plants ~~
+- Maintain camera orbital position
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
+Admin Panel
+- Menus
+- Layout
+- Gameify
+  - Unlock / discover plants
+  - Probes for getting data
+  - Graphs and tables showing plant stats
+- Display facts sheet on system items
+  - That is, similar to data section below
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+Effects
+- ~~ Sun emits light ~~
+- ~~ Sun emits light rays ~~
+- ~~ Bloom ~~
+- ~~ Shadows on planets ~~
+- Eclipes / moon shadows on items
+- Earth city lights in shadow
+- PS1 graphics lol
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## Data
+Mercury
+- 1,516mi (2,440km) radius (0.3) 
+- about 1/3 the size of Earth
+- 0.39 AU
+- Days in year: 88 
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+Venus
+– 3,760mi (6,052km) radius
+- only slightly smaller than Earth (0.94)
+- 0.72 AU
+- Days in year: 224.7
+
+Earth
+- 3,959mi (6,371km) radius
+- 1.00 AU (149,597,870.7 km)
+- Days in year: 365
+
+Mars
+– 2,106mi (3,390km) radius
+- about half the size of Earth (0.53)
+- 1.52 AU
+- Days in year: 699.584
+
+Jupiter
+- 43,441mi (69,911km) radius
+- 11x Earth's size (10.97)
+- 5.20 AU
+- Days in year: 4346.475
+
+Saturn
+- 36,184mi (58,232km) radius
+- 9x larger than Earth (9.14)
+- 9.54 AU
+- Days in year: 10847.92
+
+Uranus
+- 15,759mi (25,362km) radius
+- 4x Earth's size (3.98)
+- 19.22 AU
+- Days in year: 30790.58
+
+Neptune
+- 15,299mi (24,622km) radius
+- 4x Earth's size (3.86)
+- 30.06 AU
+- Days in year: 60193.2
+
+## Sources and attribution
+- https://github.com/theshanergy/solarsystem
+- https://www.youtube.com/watch?v=XXzqSAt3UIw
+- https://www.youtube.com/watch?v=0g4TI9gcZWE 
+- https://www.solarsystemscope.com/textures/ 
+- https://planetpixelemporium.com/earth.html 
+- https://sos.noaa.gov/catalog/datasets/
+- https://science.nasa.gov/solar-system/planets/ 

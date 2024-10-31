@@ -1,16 +1,16 @@
 import { shaderMaterial, useTexture } from "@react-three/drei";
 import sunImg from "../assets/sun.jpeg"
-import { emissive, Material, materialOpacity, Mesh, ShaderMaterial, SphereGeometry } from "three/webgpu";
-import { extend, ThreeEvent, useFrame } from "@react-three/fiber";
+import { Mesh, ShaderMaterial } from "three/webgpu";
+import { extend, useFrame } from "@react-three/fiber";
 import { useContext, useEffect, useRef, useState } from "react";
 import noise from '../shaders/noise.glsl';
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 import { CameraContext, CameraFocus } from "../context/Camera";
-import { Text } from '@react-three/drei'
 import { earthRadius } from "../constants/solarSystem";
 import { ViewContext } from "../context/View";
 
-const sunRotationY = 0.0002; // move to constants
+// move to constants
+const sunRotationY = 0.0002;
 const radiusScale = earthRadius * 109;
 export const id = 'sun';
 
@@ -21,16 +21,13 @@ const Sun = () => {
     const { handleFocus } = useContext(CameraContext);
 
     useEffect(() => {
-        console.log(id, view.targetId);
         if (view.targetId === id && sunRef) {
             const target: CameraFocus = {
                 matrixWorld: sunRef?.matrixWorld,
                 id,
                 radiusScale
             }
-            console.log("-", id, "calling")
             handleFocus(target);
-            // events.handlers.onClick(groupRef.current);
         }
     }, [view.targetId])
 
@@ -43,10 +40,7 @@ const Sun = () => {
         }
     })
 
-    const materialProps = useTexture({
-        map: sunImg
-    });
-
+    // https://github.com/theshanergy/solarsystem/blob/master/components/Sun.jsx
     const CustomShaderMaterial = shaderMaterial(
         { emissiveIntensity: 1.0, time: 0 },
         // Vertex Shader
@@ -95,7 +89,6 @@ const Sun = () => {
     }
 
     return (
-        // do I need rotation-x={Math.PI * 0.25}?
         <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25} onClick={handleClick}>
             <sphereGeometry args={[radiusScale, 32, 32]} />
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
@@ -113,7 +106,6 @@ const Sun = () => {
                         blur={true}
                     />
                     <Bloom luminanceThreshold={0.1} luminanceSmoothing={1} height={300} />
-                    {/* <Bloom intensity={0.2} radius={1} /> */}
                 </EffectComposer>
             }
         </mesh>

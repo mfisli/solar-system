@@ -1,35 +1,30 @@
-import sunImg from "../assets/sun.jpeg"
-import mercuryImg from "../assets/mercury.jpeg"
-import venusImg from "../assets/venus.jpeg"
+import sunImg from "../assets/sun.jpg"
+import mercuryImg from "../assets/mercury.jpg"
+import venusImg from "../assets/venus.jpg"
+import venusAtmosphere from "../assets/venus-atmosphere.jpg"
 import earthImg from "../assets/earth.jpg"
-import earthBump from "../assets/earthBump.jpg"
-import earthSpec from "../assets/earthSpec.jpg"
-import earthAtmophere from "../assets/earthCloud.jpg"
-import marsImg from "../assets/mars.jpeg"
-import jupiterImg from "../assets/jupiter.jpeg"
-import saturnImg from "../assets/saturn.jpeg"
+import earthBump from "../assets/earth-bump.jpg"
+import earthSpec from "../assets/earth-spec.jpg"
+import earthAtmophere from "../assets/earth-atmosphere.jpg"
+import marsImg from "../assets/mars.jpg"
+import jupiterImg from "../assets/jupiter.jpg"
+import saturnImg from "../assets/saturn.jpg"
 import saturnRingImg from "../assets/saturn-ring.png";
-import uranusImg from "../assets/uranus.jpeg"
+import uranusImg from "../assets/uranus.jpg"
 import uranusRingImg from "../assets/uranus-ring.png";
-import neptuneImg from "../assets/neptune.jpeg"
-
-export interface MoonProps {
-    bumpFile?: string;
-    textureFile: string;
-    radius: number;
-}
+import neptuneImg from "../assets/neptune.jpg"
 
 export interface PlanetProps {
     id: string;
     name: string;
-    radius: number;    // KM instead?
-    positionX: number; // Astronomical unit instead?
+    radius: number;
+    positionX: number;
     textureFile: string;
     bumpFile?: string;
     specFile?: string;
     atmosphereFile?: string;
+    atmosphereThickness?: number
     year: number;  // km/h instead? Earth is 1670 km/h, sun 7,189 km/h
-    moonList?: MoonProps[],
     ring?: {
         innerRadius: number,
         outerRadius: number,
@@ -38,7 +33,6 @@ export interface PlanetProps {
         rotationY: number,
         textureFile: string;
     }
-    // tilt: number // degrees
 }
 
 const earthYear = (2 * Math.PI * (1 / 120) * (1 / 120)) * 0.3;
@@ -46,14 +40,6 @@ export const earthRadius = 0.06371 // 6,371km
 export const astronomicalUnit = 1495.97870 // 149,597,870.7 km
 
 export const solarSystemList: PlanetProps[] = [
-    // {
-    //     id: "sun",
-    //     name: "sun",
-    //     radius: earthRadius * 109, // 695,700 
-    //     positionX: 0,
-    //     textureFile: sunImg,
-    //     year: 0.001 // TODO: relative to earth
-    // },
     {
         id: "mercury",
         name: "mercury",
@@ -68,6 +54,8 @@ export const solarSystemList: PlanetProps[] = [
         radius: 0.94,
         positionX: 0.72,
         textureFile: venusImg,
+        atmosphereFile: venusAtmosphere,
+        atmosphereThickness: 0.7,
         year: earthYear * 1.62 // 365 / 224.7
     },
     {
@@ -79,6 +67,7 @@ export const solarSystemList: PlanetProps[] = [
         bumpFile: earthBump,
         specFile: earthSpec,
         atmosphereFile: earthAtmophere,
+        atmosphereThickness: 0.1,
         year: earthYear
     },
     {

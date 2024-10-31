@@ -1,5 +1,5 @@
 import { useFrame, useThree } from "@react-three/fiber";
-import { createContext, useContext, useRef, useState } from "react";
+import { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { Camera, Matrix4, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ViewContext } from "./View";
@@ -22,7 +22,7 @@ const defaultContext: CameraContextProps = {
 
 export const CameraContext = createContext<CameraContextProps>(defaultContext);
 
-export const CameraProvider = ({ children }) => {
+export const CameraProvider = ({ children }: { children: ReactNode }) => {
     const { camera, controls }: { camera: Camera, controls: OrbitControls } = useThree();
     const { isZoom, handleSetTarget } = useContext(ViewContext);
 
