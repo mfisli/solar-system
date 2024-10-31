@@ -1,8 +1,8 @@
-import { shaderMaterial, useTexture } from "@react-three/drei";
-import sunImg from "../assets/sun.jpeg"
+import { shaderMaterial } from "@react-three/drei";
 import { Mesh, ShaderMaterial } from "three/webgpu";
 import { extend, useFrame } from "@react-three/fiber";
 import { useContext, useEffect, useRef, useState } from "react";
+// @ts-ignore: file not found
 import noise from '../shaders/noise.glsl';
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 import { CameraContext, CameraFocus } from "../context/Camera";
@@ -91,6 +91,7 @@ const Sun = () => {
     return (
         <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25} onClick={handleClick}>
             <sphereGeometry args={[radiusScale, 32, 32]} />
+            {/* @ts-ignore: type */}
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
             <pointLight position={[0, 0, 0]} intensity={9500} color={'rgb(255, 207, 55)'} />
             {sunRef &&
