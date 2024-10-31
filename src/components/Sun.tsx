@@ -2,22 +2,37 @@ import { shaderMaterial, useTexture } from "@react-three/drei";
 import sunImg from "../assets/sun.jpeg"
 import { emissive, Material, materialOpacity, Mesh, ShaderMaterial, SphereGeometry } from "three/webgpu";
 import { extend, ThreeEvent, useFrame } from "@react-three/fiber";
-import { useContext, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import noise from '../shaders/noise.glsl';
 import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
-import { CameraContext } from "../context/Camera";
+import { CameraContext, CameraFocus } from "../context/Camera";
 import { Text } from '@react-three/drei'
 import { earthRadius } from "../constants/solarSystem";
+import { ViewContext } from "../context/View";
 
 const sunRotationY = 0.0002; // move to constants
+const radiusScale = earthRadius * 109;
+export const id = 'sun';
 
 const Sun = () => {
     const [sunRef, sunRefCurrent] = useState<Mesh | null>(null);
     const shaderRef = useRef<ShaderMaterial | null>(null);
+    const view = useContext(ViewContext);
+    const { handleFocus } = useContext(CameraContext);
 
-    const sunRadius = earthRadius * 109;
-
-    const { handleFocus } = useContext(CameraContext)
+    useEffect(() => {
+        console.log(id, view.targetId);
+        if (view.targetId === id && sunRef) {
+            const target: CameraFocus = {
+                matrixWorld: sunRef?.matrixWorld,
+                id,
+                radiusScale
+            }
+            console.log("-", id, "calling")
+            handleFocus(target);
+            // events.handlers.onClick(groupRef.current);
+        }
+    }, [view.targetId])
 
     useFrame(({ clock }) => {
         if (sunRef) {
@@ -67,15 +82,22 @@ const Sun = () => {
 
     extend({ CustomShaderMaterial });
 
-    const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.object.userData = { id: 'sun', radiusScale: sunRadius };
-        handleFocus(event);
+    const handleClick = () => {
+        if (!sunRef) {
+            return;
+        }
+        const target: CameraFocus = {
+            matrixWorld: sunRef?.matrixWorld,
+            id,
+            radiusScale
+        }
+        handleFocus(target);
     }
 
     return (
         // do I need rotation-x={Math.PI * 0.25}?
         <mesh ref={sunRefCurrent} rotation-y={Math.PI * 0.25} onClick={handleClick}>
-            <sphereGeometry args={[sunRadius, 32, 32]} />
+            <sphereGeometry args={[radiusScale, 32, 32]} />
             <customShaderMaterial ref={shaderRef} emissiveIntensity={5} time={0} />
             <pointLight position={[0, 0, 0]} intensity={9500} color={'rgb(255, 207, 55)'} />
             {sunRef &&

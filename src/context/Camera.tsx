@@ -2,10 +2,16 @@ import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
 import { createContext, useContext, useRef, useState } from "react";
 import { Camera, Matrix4, Object3D, Object3DEventMap, Vector3, SpotLight, PointLight, PointLightHelper } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { ScaleContext } from "./Scale";
+import { ViewContext } from "./View";
+
+export interface CameraFocus {
+    matrixWorld: Matrix4;
+    radiusScale: number;
+    id: string;
+}
 
 interface CameraContextProps {
-    focus: Object3D<Object3DEventMap> | null;
+    focus: CameraFocus | null;
     handleFocus: (event: any) => void;
 }
 
@@ -20,12 +26,11 @@ export const CameraContext = createContext<CameraContextProps>(defaultContext);
 
 export const CameraProvider = ({ children }) => {
     const { camera, controls }: { camera: Camera, controls: OrbitControls } = useThree();
-    const { isZoom } = useContext(ScaleContext);
+    const { isZoom, handleSetTarget } = useContext(ViewContext);
 
     const targetPosition = useRef(new Vector3(0, 0, 0));
-    console.log("controls", controls)
 
-    const [focus, setFocus] = useState<Object3D<Object3DEventMap> | null>(null);
+    const [focus, setFocus] = useState<CameraFocus | null>(null);
 
     useFrame(() => {
         if (!focus) {
@@ -34,16 +39,17 @@ export const CameraProvider = ({ children }) => {
         targetPosition.current = new Vector3().setFromMatrixPosition(focus.matrixWorld);
         camera.lookAt(targetPosition.current);
         if (isZoom) {
-            camera.position.lerp(targetPosition.current, 0.05);
+            camera.position.lerp(targetPosition.current, 0.005);
         }
-        controls.minDistance = focus.userData.radiusScale * 3;
-        // console.log("focus.userData.radius * 5", focus.userData.radius * 5);
+        controls.minDistance = focus.radiusScale * 3;
         controls.target.copy(targetPosition.current);
         controls.update();
     });
 
-    const handleFocus = (event: ThreeEvent<MouseEvent>) => {
-        setFocus(event.object);
+    const handleFocus = (target: CameraFocus) => {
+        console.log("- handleFocus", target);
+        setFocus(target);
+        handleSetTarget(target.id);
     }
 
     return <CameraContext.Provider value={{ focus, handleFocus }}> {children} </CameraContext.Provider>

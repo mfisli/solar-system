@@ -1,61 +1,57 @@
 import { Camera, ThreeEvent, useFrame, useLoader, useThree } from "@react-three/fiber";
-import { RefObject, useContext, useMemo, useRef, useState } from "react";
+import { RefObject, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { BufferGeometry, Color, DoubleSide, EllipseCurve, Mesh, MeshPhongMaterial, TextureLoader, Vector3 } from "three";
 import { PlanetProps } from "../constants/solarSystem";
-import { MeshBasicNodeMaterial } from "three/webgpu";
-import { CameraContext } from "../context/Camera";
-import { ScaleContext } from "../context/Scale";
+import { MeshBasicNodeMaterial, userData } from "three/webgpu";
+import { CameraContext, CameraFocus } from "../context/Camera";
+import { ViewContext } from "../context/View";
 import { Line, useCursor } from "@react-three/drei";
 
 
 const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX, radius, year, ring }: PlanetProps) => {
-    const scale = useContext(ScaleContext);
-
+    const view = useContext(ViewContext);
+    const { handleFocus } = useContext(CameraContext);
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
     const materialRef = useRef<MeshPhongMaterial | null>(null);
     const atmosphereRef = useRef<Mesh | null>(null);
-    const orbitRef = useRef();
+
+    useEffect(() => {
+        console.log(id, view.targetId);
+        if (view.targetId === id && sphereRef.current) {
+            const target: CameraFocus = {
+                matrixWorld: sphereRef.current?.matrixWorld,
+                id,
+                radiusScale
+            }
+            console.log("-", id, "calling")
+            handleFocus(target);
+        }
+    }, [view.targetId])
 
     const positionXScale = useMemo(() => {
-        // console.log(id, scale.astronomicalUnit * positionX)
-        return scale.astronomicalUnit * positionX;
-    }, [scale.astronomicalUnit]);
+        return view.astronomicalUnit * positionX;
+    }, [view.astronomicalUnit]);
 
     const radiusScale = useMemo(() => {
-        // console.log(id, scale.relativeRadius * radius)
-        return scale.relativeRadius * radius;
-    }, [scale.relativeRadius]);
+        return view.relativeRadius * radius;
+    }, [view.relativeRadius]);
 
     const curve = useMemo(() => {
         const curve = new EllipseCurve(0, 0, positionXScale, positionXScale, 0, 2 * Math.PI);
         return curve;
     }, [positionXScale]);
 
-    const { camera }: { camera: Camera } = useThree();
-
-    const { handleFocus } = useContext(CameraContext);
     const [isHovered, setIsHovered] = useState(false);
     useCursor(isHovered);
 
-    const orbitSpeed = 0.00001;
-
-    useFrame(({ clock }) => {
+    useFrame(() => {
         if (!curve || !groupRef.current) {
             return;
         }
-        // const geo = new BufferGeometry().setFromPoints(curve.getSpacedPoints(200));
-        // geo.rotateX(-Math.PI/2);
-        // const time = orbitSpeed * clock.elapsedTime;
-        // const travel = (time % year) / year;
-        // let points = geo.getPoint(travel);
-        // groupRef.current.position.x = points.x;
-        // groupRef.current.position.y = points.y;
 
         if (groupRef.current) {
             groupRef.current.rotateY(year);
-            // groupRef.current.userData = { key: id }
-            // console.log("userData", groupRef.current.userData)
         }
         if (sphereRef.current) {
             // FIXME: placeholder year; should be 24h relative
@@ -75,26 +71,37 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
     const handleClick = (event: ThreeEvent<MouseEvent>) => {
-        event.object.userData = { id, radiusScale };
-        handleFocus(event);
+        console.log("sphereRef.current", sphereRef.current)
+        // const target: CameraFocus = {
+        //     matrixWorld: event.object.matrixWorld,
+        //     id,
+        //     radiusScale
+        // }
+        const target: CameraFocus = {
+            matrixWorld: sphereRef.current?.matrixWorld,
+            id,
+            radiusScale
+        }
+        // if (event.object.matrixWorld === sphereRef.current?.matrixWorld) {
+        //     console.log("equal martix", event.object.matrixWorld, sphereRef.current.matrixWorld)
+        // } else {
+        //     console.log("diff matrix", event.object.matrixWorld, sphereRef.current.matrixWorld)
+        // }
+        handleFocus(target);
     }
-    //  rotateX={-Math.PI/2}  rotation={[-Math.PI / 2, 0, 0]}
+
     return (
         <>
             <Line points={curve.getSpacedPoints(200)} color="white" transparent opacity={0.05} lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
-            {/* <line ref={orbitRef} >
-                <bufferGeometry setFromPoints={curve.getSpacedPoints(200)} />
-                <lineBasicMaterial color="pink" linewidth={1} />
-            </line> */}
-            <object3D ref={groupRef} onClick={handleClick} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
-                <mesh ref={sphereRef} castShadow receiveShadow position-x={positionXScale}>
+            <object3D ref={groupRef} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
+                <mesh ref={sphereRef} onClick={handleClick} castShadow receiveShadow position-x={positionXScale}>
                     <sphereGeometry args={[radiusScale, 32, 32]} />
                     <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
                 </mesh >
                 {
                     atmosphere &&
                     <mesh ref={atmosphereRef} position-x={positionXScale} >
-                        <sphereGeometry args={[radiusScale + 0.01, 32, 32]} />
+                        <sphereGeometry args={[radiusScale + 0.02, 32, 32]} />
                         <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
                     </mesh>
                 }

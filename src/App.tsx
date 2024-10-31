@@ -10,7 +10,8 @@ import Rotation from './Rotation';
 import { OrbitControls } from '@react-three/drei'
 import Scene from './components/Scene';
 import { Bloom, EffectComposer, GodRays, } from '@react-three/postprocessing';
-import { ScaleProvider } from './context/Scale';
+import { ViewProvider } from './context/View';
+import { CameraProvider } from './context/Camera';
 
 function App() {
 
@@ -60,16 +61,18 @@ function App() {
 
   return (
     <main>
-      <ScaleProvider>
+      <ViewProvider>
         <Canvas camera={{ fov: 45, position: [10, 10, 150], far: 200000 }}>
-          <color attach='background' args={['black']} />
-          <ambientLight intensity={0.09} />
-          <pointLight ref={lightRef} position={[0, 0, 0]} intensity={5} decay={1} />
-          <OrbitControls onChange={(e) => handleControlChange(e)} enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
-          <Scene />
+          <CameraProvider>
+            <color attach='background' args={['black']} />
+            <ambientLight intensity={0.09} />
+            <pointLight ref={lightRef} position={[0, 0, 0]} intensity={5} decay={1} />
+            <OrbitControls onChange={(e) => handleControlChange(e)} enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
+            <Scene />
+          </CameraProvider>
         </Canvas>
         {/* <canvas id="canvas"></canvas> */}
-      </ScaleProvider>
+      </ViewProvider>
     </main>
   )
 }
