@@ -1,5 +1,7 @@
 # Solar System
-The purpose of this project is to model the solar system in a 3D enviroment with the sun and planets.
+The purpose of this project is to model the solar system in a 3D environment with the sun and planets. The main motivation is to provide a better representation of the size and relative distances between plants and the sun. Often we see images of our solar system with all the planets having a roughly similar size and fairly close to one another. While this is easy to comprehend, it is not a good model for how vast and big things really are. This project enables the user to render the system in their browser and dynamic change of size and distances so that they can get a better feel for why Earth is often called a "pale blue dot".
+
+For more information about this project and the developer, please see: https://maksfisli.com 
 
 ## Local Setup
 - git clone
@@ -20,7 +22,6 @@ The purpose of this project is to model the solar system in a 3D enviroment with
 
 ## TODOS
 System Items
-
 - Correct planet rotation on axis
 - Pitch / tilt of planets
 - ~~ Add scale to items (relative to earth radius) ~~

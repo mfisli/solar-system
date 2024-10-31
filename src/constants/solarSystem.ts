@@ -1,4 +1,3 @@
-import sunImg from "../assets/sun.jpg"
 import mercuryImg from "../assets/mercury.jpg"
 import venusImg from "../assets/venus.jpg"
 import venusAtmosphere from "../assets/venus-atmosphere.jpg"
