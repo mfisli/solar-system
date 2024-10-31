@@ -4,7 +4,8 @@ import { astronomicalUnit, earthRadius, solarSystemList } from "../constants/sol
 interface ViewSettingsContext {
     astronomicalUnit: number;
     relativeRadius: number;
-    isZoom?: boolean;
+    isZoom: boolean;
+    orbitLines: boolean;
     targetId: string;
     handleSetTarget: (id: string) => void
 }
@@ -14,7 +15,8 @@ const targetList = ['sun', ...solarSystemList.map(item => item.id)];
 const defaultView: ViewSettingsContext = {
     astronomicalUnit: 36,
     relativeRadius: earthRadius * 20,
-    isZoom: true,
+    isZoom: false,
+    orbitLines: true,
     targetId: targetList[0],
     handleSetTarget: () => { }
 }
@@ -32,6 +34,7 @@ export const ViewProvider = ({ children }) => {
     }
 
     const [view, setView] = useState<ViewSettingsContext>(defaultView);
+    const [hideMenu, setHideMenu] = useState(false);
 
 
     const handleAUChange = (event) => {
@@ -50,6 +53,13 @@ export const ViewProvider = ({ children }) => {
     const handleZoomChange = () => {
         setView(prev => {
             return { ...prev, isZoom: !prev.isZoom }
+        });
+    }
+
+
+    const handleOrbitLinesChange = () => {
+        setView(prev => {
+            return { ...prev, orbitLines: !prev.orbitLines }
         });
     }
 
@@ -77,16 +87,42 @@ export const ViewProvider = ({ children }) => {
 
     return (
         <>
-            <span>Astronomical Unit Scale: {Math.ceil((view.astronomicalUnit / astronomicalUnit) * 100)} %</span> <br />
-            <input type="range" step={0.5} min={0} max={astronomicalUnit} value={view.astronomicalUnit} onChange={handleAUChange} /> <br />
-            <span>Relative Radius: {Math.ceil((view.relativeRadius / earthRadius) * 100)} %</span> <br />
-            <input type="range" step={0.000001} min={earthRadius} max={earthRadius * 50} value={view.relativeRadius} onChange={handleRadiusChange} />
-            <button onClick={handleReset}>Reset</button>
-            <span>Zoom</span>
-            <input type="checkbox" checked={view.isZoom} onChange={handleZoomChange} />
-            <button onClick={handlePrevTarget}>Prev</button>
-            <span>Target: {view.targetId}</span>
-            <button onClick={handleNextTarget}>Next</button>
+            <div className="setting-wrapper position-absolute z-index-front container">
+                <div className="field-group">
+                    <button className={hideMenu ? 'opacity-50' : ''} onClick={() => setHideMenu(prev => !prev)}>{hideMenu ? '>' : '< Hide Menu'}</button>
+                </div>
+                {!hideMenu &&
+                    <>
+                        <div className="field-group">
+                            <div className="flex w-100 justify-space-between">
+                                <button onClick={handlePrevTarget}>Prev</button>
+                                <span className="target-text">{view.targetId}</span>
+                                <button onClick={handleNextTarget}>Next</button>
+                            </div>
+                        </div>
+                        <div className="field-group">
+                            <input type="checkbox" id="fixed-zoom" checked={view.isZoom} onChange={handleZoomChange} />
+                            <label htmlFor='fixed-zoom'>Fixed Zoom</label>
+                        </div>
+                        <div className="field-group">
+                            <input type="checkbox" id="orbit-lines" checked={view.orbitLines} onChange={handleOrbitLinesChange} />
+                            <label htmlFor='orbit-lines'>Orbit Lines</label>
+                        </div>
+                        <div className="field-group">
+                            <label>Astronomical Unit Scale: {Math.ceil((view.astronomicalUnit / astronomicalUnit) * 100)}%</label> <br />
+                            <input type="range" step={0.5} min={0} max={astronomicalUnit} value={view.astronomicalUnit} onChange={handleAUChange} /> <br />
+                        </div>
+                        <div className="field-group">
+                            <label>Relative Radius: {Math.ceil((view.relativeRadius / earthRadius) * 100)}%</label> <br />
+                            <input type="range" step={0.000001} min={earthRadius} max={earthRadius * 50} value={view.relativeRadius} onChange={handleRadiusChange} />
+                        </div>
+                        <div className="field-group">
+                            <button onClick={handleReset}>Reset</button>
+                        </div>
+                        <a href="https://maksfisli.com" target="_blank">maksfisli.com</a>
+                    </>
+                }
+            </div>
             <ViewContext.Provider value={{ ...view, handleSetTarget }}>
                 {children}
             </ViewContext.Provider>

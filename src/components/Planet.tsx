@@ -51,7 +51,7 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
         }
 
         if (groupRef.current) {
-            groupRef.current.rotateY(year);
+            groupRef.current.rotateY(year / (positionXScale * 0.09));
         }
         if (sphereRef.current) {
             // FIXME: placeholder year; should be 24h relative
@@ -92,16 +92,18 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, positionX
 
     return (
         <>
-            <Line points={curve.getSpacedPoints(200)} color="white" transparent opacity={0.05} lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
+            {view.orbitLines &&
+                <Line points={curve.getSpacedPoints(200)} color="white" transparent opacity={0.05} lineWidth={1} rotation={[-Math.PI / 2, 0, 0]} />
+            }
             <object3D ref={groupRef} onPointerOver={() => setIsHovered(true)} onPointerOut={() => setIsHovered(false)}>
                 <mesh ref={sphereRef} onClick={handleClick} castShadow receiveShadow position-x={positionXScale}>
                     <sphereGeometry args={[radiusScale, 32, 32]} />
-                    <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={1} specularMap={spec} shininess={0.5} />
+                    <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={15} specularMap={spec} shininess={0.5} />
                 </mesh >
                 {
                     atmosphere &&
                     <mesh ref={atmosphereRef} position-x={positionXScale} >
-                        <sphereGeometry args={[radiusScale + 0.02, 32, 32]} />
+                        <sphereGeometry args={[radiusScale * 1.02, 32, 32]} />
                         <meshPhongMaterial map={atmosphere} transparent={true} opacity={0.1} />
                     </mesh>
                 }

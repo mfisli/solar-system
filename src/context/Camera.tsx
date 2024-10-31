@@ -1,6 +1,6 @@
-import { ThreeEvent, useFrame, useThree } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 import { createContext, useContext, useRef, useState } from "react";
-import { Camera, Matrix4, Object3D, Object3DEventMap, Vector3, SpotLight, PointLight, PointLightHelper } from "three";
+import { Camera, Matrix4, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
 import { ViewContext } from "./View";
 
@@ -21,8 +21,6 @@ const defaultContext: CameraContextProps = {
 }
 
 export const CameraContext = createContext<CameraContextProps>(defaultContext);
-
-// export const useCamera = useContext(CameraContext);
 
 export const CameraProvider = ({ children }) => {
     const { camera, controls }: { camera: Camera, controls: OrbitControls } = useThree();
@@ -47,7 +45,6 @@ export const CameraProvider = ({ children }) => {
     });
 
     const handleFocus = (target: CameraFocus) => {
-        console.log("- handleFocus", target);
         setFocus(target);
         handleSetTarget(target.id);
     }
