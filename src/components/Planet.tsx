@@ -6,9 +6,9 @@ import { CameraContext, CameraFocus } from "../context/Camera";
 import { ViewContext } from "../context/View";
 import { Line, useCursor } from "@react-three/drei";
 import debounce from "../utils/debounce";
+import TextLabel from "./TextLabel";
 
-
-const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmosphereThickness, positionX, radius, year, ring }: PlanetProps) => {
+const Planet = ({ id, name, textureFile, bumpFile, specFile, atmosphereFile, atmosphereThickness, positionX, radius, year, ring }: PlanetProps) => {
     const view = useContext(ViewContext);
     const [positionXScale, setPositionXScale] = useState(positionX);
     const [radiusScale, setRadiusScale] = useState(radius);
@@ -96,6 +96,9 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmospher
                 <mesh ref={sphereRef} onClick={handleClick} castShadow receiveShadow position-x={positionXScale}>
                     <sphereGeometry args={[radiusScale, 32, 32]} />
                     <meshPhongMaterial ref={materialRef} map={texture} bumpMap={bump} bumpScale={15} specularMap={spec} shininess={0.5} />
+                    <TextLabel>
+                        {name}
+                    </TextLabel>
                 </mesh >
                 {
                     atmosphere && atmosphereThickness &&

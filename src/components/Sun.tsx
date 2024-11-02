@@ -8,6 +8,7 @@ import { Bloom, EffectComposer, GodRays } from "@react-three/postprocessing";
 import { CameraContext, CameraFocus } from "../context/Camera";
 import { earthRadius } from "../constants/solarSystem";
 import { ViewContext } from "../context/View";
+import TextLabel from "./TextLabel";
 
 // move to constants
 const sunRotationY = 0.0002;
@@ -109,6 +110,9 @@ const Sun = () => {
                     <Bloom luminanceThreshold={0.1} luminanceSmoothing={1} height={300} />
                 </EffectComposer>
             }
+            <TextLabel>
+                {id}
+            </TextLabel>
         </mesh>
     )
 }

@@ -111,3 +111,26 @@ a:hover {
   color: #eee;
   border-radius: 10px;
 }
+
+.text-label {
+  transform: translate3d(calc(15px), -11px, 0);
+  text-align: left;
+  color: white;
+  text-transform: capitalize;
+  z-index: 0;
+  user-select: none;
+  pointer-events: none;
+}
+
+.text-label::before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  left: -25px;
+  top: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 10px;
+  border: 1px solid white;
+  background-color: transparent;
+}

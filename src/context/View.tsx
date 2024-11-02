@@ -8,6 +8,7 @@ interface ViewSettingsContext {
     isZoom: boolean;
     orbitLines: boolean;
     targetId: string;
+    labels: boolean;
     handleSetTarget: (id: string) => void
 }
 
@@ -19,6 +20,7 @@ const defaultView: ViewSettingsContext = {
     isZoom: false,
     orbitLines: true,
     targetId: targetList[0],
+    labels: false,
     handleSetTarget: () => { }
 }
 
@@ -60,6 +62,12 @@ export const ViewProvider = ({ children }: { children: ReactNode }) => {
     const handleOrbitLinesChange = () => {
         setView(prev => {
             return { ...prev, orbitLines: !prev.orbitLines }
+        });
+    }
+
+    const handleLabelsChange = () => {
+        setView(prev => {
+            return { ...prev, labels: !prev.labels }
         });
     }
 
@@ -107,6 +115,10 @@ export const ViewProvider = ({ children }: { children: ReactNode }) => {
                         <div className="field-group">
                             <input type="checkbox" id="orbit-lines" checked={view.orbitLines} onChange={handleOrbitLinesChange} />
                             <label htmlFor='orbit-lines'>Orbit Lines</label>
+                        </div>
+                        <div className="field-group">
+                            <input type="checkbox" id="labels" checked={view.labels} onChange={handleLabelsChange} />
+                            <label htmlFor='labels'>Labels</label>
                         </div>
                         <div className="field-group">
                             <label>Astronomical Unit Scale: {Math.ceil((view.astronomicalUnit / astronomicalUnit) * 100)}%</label> <br />
