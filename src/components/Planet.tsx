@@ -1,14 +1,18 @@
 import { useFrame, useLoader } from "@react-three/fiber";
-import { useContext, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { DoubleSide, EllipseCurve, Mesh, MeshPhongMaterial, TextureLoader } from "three";
 import { PlanetProps } from "../constants/solarSystem";
 import { CameraContext, CameraFocus } from "../context/Camera";
 import { ViewContext } from "../context/View";
 import { Line, useCursor } from "@react-three/drei";
+import debounce from "../utils/debounce";
 
 
 const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmosphereThickness, positionX, radius, year, ring }: PlanetProps) => {
     const view = useContext(ViewContext);
+    const [positionXScale, setPositionXScale] = useState(positionX);
+    const [radiusScale, setRadiusScale] = useState(radius);
+
     const { handleFocus } = useContext(CameraContext);
     const groupRef = useRef<Mesh | null>(null);
     const sphereRef = useRef<Mesh | null>(null);
@@ -26,13 +30,19 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmospher
         }
     }, [view.targetId])
 
-    const positionXScale = useMemo(() => {
-        return view.astronomicalUnit * positionX;
-    }, [view.astronomicalUnit]);
+    const debouncedSetPositionXScale = useCallback(debounce(setPositionXScale), []);
 
-    const radiusScale = useMemo(() => {
-        return view.relativeRadius * radius;
-    }, [view.relativeRadius]);
+    useEffect(
+        () => { debouncedSetPositionXScale(view.astronomicalUnit * positionX) },
+        [view.astronomicalUnit, positionX]
+    );
+
+    const debouncedsetRadiusScale = useCallback(debounce(setRadiusScale), []);
+
+    useEffect(
+        () => { debouncedsetRadiusScale(view.relativeRadius * radius) },
+        [view.relativeRadius, radius]
+    );
 
     const curve = useMemo(() => {
         const curve = new EllipseCurve(0, 0, positionXScale, positionXScale, 0, 2 * Math.PI);
@@ -43,7 +53,7 @@ const Planet = ({ id, textureFile, bumpFile, specFile, atmosphereFile, atmospher
     useCursor(isHovered);
 
     useFrame(() => {
-        if (!curve || !groupRef.current) {
+        if (!groupRef.current) {
             return;
         }
 

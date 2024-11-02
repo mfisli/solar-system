@@ -110,7 +110,7 @@ export const ViewProvider = ({ children }: { children: ReactNode }) => {
                         </div>
                         <div className="field-group">
                             <label>Astronomical Unit Scale: {Math.ceil((view.astronomicalUnit / astronomicalUnit) * 100)}%</label> <br />
-                            <input type="range" step={0.5} min={0} max={astronomicalUnit} value={view.astronomicalUnit} onChange={handleAUChange} /> <br />
+                            <input type="range" step={0.5} min={0.0001} max={astronomicalUnit} value={view.astronomicalUnit} onChange={handleAUChange} /> <br />
                         </div>
                         <div className="field-group">
                             <label>Relative Radius: {Math.ceil((view.relativeRadius / earthRadius) * 100)}%</label> <br />
