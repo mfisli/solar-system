@@ -1,15 +1,17 @@
 // https://github.com/theshanergy/solarsystem/blob/master/components/Stars.jsx
-import { useRef, useMemo, useEffect } from 'react'
+import { useRef, useMemo, useEffect, useContext } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { InstancedMesh, Object3D } from 'three'
+import { ViewContext } from '../context/View'
 
 const Stars = ({ count = 5000 }) => {
-    const meshRef = useRef<InstancedMesh | null>(null)
+    const meshRef = useRef<InstancedMesh | null>(null);
+    const { astronomicalUnit } = useContext(ViewContext);
 
     const positions = useMemo(() => {
         const positions = [];
 
-        const minDistance = 1000
+        const minDistance = astronomicalUnit * 30;
 
         for (let i = 0; i < count; i++) {
             const distance = minDistance + Math.random() * 4500;
@@ -23,7 +25,7 @@ const Stars = ({ count = 5000 }) => {
         }
 
         return new Float32Array(positions);
-    }, [count]);
+    }, [count, astronomicalUnit]);
 
     useEffect(() => {
         if (!meshRef.current) {

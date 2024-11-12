@@ -64,6 +64,10 @@ main {
   width: 100%;
 }
 
+.h-100 {
+  height: 100%;
+}
+
 .field-group {
   margin-bottom: 0.8rem;
 }
@@ -133,4 +137,37 @@ a:hover {
   border-radius: 10px;
   border: 1px solid white;
   background-color: transparent;
+}
+
+.loading-wrapper {
+  position: absolute;
+  height: 100Vh;
+  width: 100%;
+  top: 0;
+  left: 0;
+  color: #eee;
+  z-index: 1000;
+}
+
+.loading-icon {
+  font-size: 5rem;
+}
+
+.spin-slow {
+  animation: spin-animation 5s infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes spin-animation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  50% {
+    transform: rotate(180deg);
+  }
+
+  100% {
+    transform: rotate(359deg);
+  }
 }

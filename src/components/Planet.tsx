@@ -73,7 +73,6 @@ const Planet = ({ id, name, textureFile, bumpFile, specFile, atmosphereFile, atm
     const bump = bumpFile ? useLoader(TextureLoader, bumpFile) : null;
     const spec = specFile ? useLoader(TextureLoader, specFile) : null;
     const atmosphere = atmosphereFile ? useLoader(TextureLoader, atmosphereFile) : null;
-
     const ringTexture = ring ? useLoader(TextureLoader, ring.textureFile) : null;
 
     const handleClick = () => {

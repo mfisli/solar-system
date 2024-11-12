@@ -24,7 +24,7 @@ const Scene = () => {
             <color attach='background' args={['black']} />
             <ambientLight intensity={0.09} />
             <pointLight ref={lightRef} position={[0, 0, 0]} intensity={5} decay={1} />
-            <OrbitControls onChange={handleControlChange} enablePan={false} maxDistance={2000} minDistance={5} makeDefault target={[0, 0, 0]} />
+            <OrbitControls onChange={handleControlChange} enablePan={false} maxDistance={10000} minDistance={5} makeDefault target={[0, 0, 0]} />
             <Sun />
             {solarSystemList.map(item => <Planet key={item.id} {...item} />)}
             <Stars />

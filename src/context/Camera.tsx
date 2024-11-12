@@ -2,7 +2,7 @@ import { useFrame, useThree } from "@react-three/fiber";
 import { createContext, ReactNode, useContext, useRef, useState } from "react";
 import { Camera, Matrix4, Vector3 } from "three";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls.js";
-import { ViewContext } from "./View";
+import { ViewActionType, ViewContext } from "./View";
 
 export interface CameraFocus {
     matrixWorld: Matrix4;
@@ -24,7 +24,7 @@ export const CameraContext = createContext<CameraContextProps>(defaultContext);
 
 export const CameraProvider = ({ children }: { children: ReactNode }) => {
     const { camera, controls }: { camera: Camera, controls: OrbitControls } = useThree();
-    const { isZoom, handleSetTarget } = useContext(ViewContext);
+    const { isZoom, dispatch } = useContext(ViewContext);
 
     const targetPosition = useRef(new Vector3(0, 0, 0));
 
@@ -46,7 +46,10 @@ export const CameraProvider = ({ children }: { children: ReactNode }) => {
 
     const handleFocus = (target: CameraFocus) => {
         setFocus(target);
-        handleSetTarget(target.id);
+        dispatch?.({
+            type: ViewActionType.SET_TARGET,
+            payload: target.id
+        });
     }
 
     return <CameraContext.Provider value={{ focus, handleFocus }}> {children} </CameraContext.Provider>
